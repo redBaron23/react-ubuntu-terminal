@@ -1,12 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Terminal from './Components/Terminal';
+import UbuntuTerminal from './Components/UbuntuTerminal';
 
 function App() {
   return (
     <div className="App">
-      <Terminal />
+      <UbuntuTerminal />
     </div>
   );
 }
