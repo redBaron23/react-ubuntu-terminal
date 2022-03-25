@@ -1,24 +1,48 @@
+import { useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
 interface Props {}
 
 const UbuntuTerminal = (props: Props) => {
+  const inputRef = useRef<any>();
+  const [terminalText, setTerminalText] = useState("");
+  const [inputWidth, setInputWidth] = useState<number>(0);
+  const [username, setUsername] = useState<string>("manfred");
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  const handleOnType = (e: any) => {
+    const text = e.target.value;
+    setTerminalText(text);
+    setInputWidth(e.target.value.length * 8);
+  };
+
   return (
     <Container>
-      <Terminal>
+      <Terminal onClick={() => inputRef.current.focus()}>
         <TerminalBar>
           <BarButtons>
             <BarButton exit />
             <BarButton />
             <BarButton />
           </BarButtons>
+          <BarUser>{username}@ubuntu:</BarUser>
         </TerminalBar>
         <TerminalBody>
           <TerminalPrompt>
-            <TerminalPromptUser>manfred@ubuntu:</TerminalPromptUser>
+            <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
             <TerminalPromptLocation>~</TerminalPromptLocation>
             <TerminalPromptBling>$</TerminalPromptBling>
-            <TerminalPromptCursor></TerminalPromptCursor>
+            <TerminalPromptInput
+              type="text"
+              value={terminalText}
+              onChange={handleOnType}
+              ref={inputRef}
+              style={{ width: inputWidth }}
+            />
+            <TerminalPromptCursor />
           </TerminalPrompt>
         </TerminalBody>
       </Terminal>
@@ -140,11 +164,25 @@ const TerminalPromptBling = styled.span`
   color: #dddddd;
 `;
 
+const TerminalPromptInput = styled.input`
+  background: rgba(56, 4, 40, 0.9);
+  color: #dddddd;
+  font-family: "Ubuntu Mono";
+  font-size: 1em;
+  padding: 0;
+  border: none;
+  margin-left: 9px;
+
+  &:focus-visible {
+    outline: none;
+    caret-color: transparent;
+  }
+`;
+
 const TerminalPromptCursor = styled.span`
   display: block;
   height: 17px;
   width: 8px;
-  margin-left: 9px;
   animation: ${Blink} 1200ms linear infinite;
 `;
 
