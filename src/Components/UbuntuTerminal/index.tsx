@@ -19,6 +19,28 @@ const UbuntuTerminal = (props: Props) => {
     setInputWidth(e.target.value.length * 8);
   };
 
+  const renderHistoryItem = () => {
+    return (
+      <HistoryItemContainer>
+        <TerminalPrompt>
+          <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
+          <TerminalPromptLocation>~</TerminalPromptLocation>
+          <TerminalPromptBling>$</TerminalPromptBling>
+          <TerminalPromptInput
+            type="text"
+            value={"ls"}
+            onChange={handleOnType}
+            ref={inputRef}
+            isHistory
+          />
+        </TerminalPrompt>
+        <TerminalPrompt>
+          <TerminalPromptBling>README.md</TerminalPromptBling>
+        </TerminalPrompt>
+      </HistoryItemContainer>
+    );
+  };
+
   return (
     <Container>
       <Terminal onClick={() => inputRef.current.focus()}>
@@ -31,6 +53,7 @@ const UbuntuTerminal = (props: Props) => {
           <BarUser>{username}@ubuntu:</BarUser>
         </TerminalBar>
         <TerminalBody>
+          {renderHistoryItem()}
           <TerminalPrompt>
             <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
             <TerminalPromptLocation>~</TerminalPromptLocation>
@@ -164,8 +187,9 @@ const TerminalPromptBling = styled.span`
   color: #dddddd;
 `;
 
-const TerminalPromptInput = styled.input`
-  background: rgba(56, 4, 40, 0.9);
+const TerminalPromptInput = styled.input<{ isHistory?: boolean }>`
+  background: ${(props) =>
+    props.isHistory ? "rgb(69,11,44)" : "rgba(56, 4, 40, 0.9)"};
   color: #dddddd;
   font-family: "Ubuntu Mono";
   font-size: 1em;
@@ -173,6 +197,7 @@ const TerminalPromptInput = styled.input`
   border: none;
   margin-left: 9px;
 
+  ${(props) => props.isHistory && { width: "100%" }};
   &:focus-visible {
     outline: none;
     caret-color: transparent;
@@ -184,6 +209,11 @@ const TerminalPromptCursor = styled.span`
   height: 17px;
   width: 8px;
   animation: ${Blink} 1200ms linear infinite;
+`;
+
+const HistoryItemContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 export default UbuntuTerminal;
