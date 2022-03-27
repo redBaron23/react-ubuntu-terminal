@@ -1,6 +1,9 @@
+import Folder from "./FileSystem/Folder";
+
 interface BashState {
-    history: string;
+    history: History;
     cwd: string;   
+    fileSystem: Folder;
 }
 
 export default BashState;
