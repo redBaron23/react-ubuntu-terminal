@@ -6,7 +6,7 @@ import UbuntuTerminal from './Components/UbuntuTerminal';
 function App() {
   return (
     <div className="App">
-      <UbuntuTerminal />
+      <UbuntuTerminal username="manfred"/>
     </div>
   );
 }

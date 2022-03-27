@@ -1,13 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-interface Props {}
+const DEFAULT_USER = "manfred";
+
+interface Props {
+  username: string;
+}
+
+const getInputWidth = (input: string) => {
+  return input.length * 8;
+};
 
 const UbuntuTerminal = (props: Props) => {
+  const { username } = props;
   const inputRef = useRef<any>();
-  const [terminalText, setTerminalText] = useState("");
-  const [inputWidth, setInputWidth] = useState<number>(0);
-  const [username, setUsername] = useState<string>("manfred");
+
+  const [terminalInput, setTerminalInput] = useState("");
+  const [cwd, setCwd] = useState<string>(`~`);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -15,8 +24,7 @@ const UbuntuTerminal = (props: Props) => {
 
   const handleOnType = (e: any) => {
     const text = e.target.value;
-    setTerminalText(text);
-    setInputWidth(e.target.value.length * 8);
+    setTerminalInput(text);
   };
 
   const renderHistoryItem = () => {
@@ -24,7 +32,7 @@ const UbuntuTerminal = (props: Props) => {
       <HistoryItemContainer>
         <TerminalPrompt>
           <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
-          <TerminalPromptLocation>~</TerminalPromptLocation>
+          <TerminalPromptLocation>{cwd}</TerminalPromptLocation>
           <TerminalPromptBling>$</TerminalPromptBling>
           <TerminalPromptInput
             type="text"
@@ -60,10 +68,10 @@ const UbuntuTerminal = (props: Props) => {
             <TerminalPromptBling>$</TerminalPromptBling>
             <TerminalPromptInput
               type="text"
-              value={terminalText}
+              value={terminalInput}
               onChange={handleOnType}
               ref={inputRef}
-              style={{ width: inputWidth }}
+              style={{ width: getInputWidth(terminalInput) }}
             />
             <TerminalPromptCursor />
           </TerminalPrompt>
