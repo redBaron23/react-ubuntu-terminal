@@ -114,9 +114,8 @@ export const TerminalPromptBling = styled.span`
   color: #dddddd;
 `;
 
-export const TerminalPromptInput = styled.input<{ isHistory?: boolean }>`
-  background: ${(props) =>
-    props.isHistory ? "rgb(69,11,44)" : "rgba(56, 4, 40, 0.9)"};
+export const TerminalPromptInput = styled.input`
+  background: "rgba(56, 4, 40, 0.9)";
   color: #dddddd;
   font-family: "Ubuntu Mono";
   font-size: 1em;
@@ -124,7 +123,6 @@ export const TerminalPromptInput = styled.input<{ isHistory?: boolean }>`
   border: none;
   margin-left: 9px;
 
-  ${(props) => props.isHistory && { width: "100%" }};
   &:focus-visible {
     outline: none;
     caret-color: transparent;

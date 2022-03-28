@@ -57,13 +57,7 @@ const UbuntuTerminal = (props: Props) => {
           <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
           <TerminalPromptLocation>{cwd}</TerminalPromptLocation>
           <TerminalPromptBling>$</TerminalPromptBling>
-          <TerminalPromptInput
-            type="text"
-            value={"ls"}
-            onChange={handleOnType}
-            ref={inputRef}
-            isHistory
-          />
+          <TerminalPromptBling>ls</TerminalPromptBling>
         </TerminalPrompt>
         <TerminalPrompt>
           <TerminalPromptBling>README.md</TerminalPromptBling>
