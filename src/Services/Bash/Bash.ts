@@ -6,9 +6,11 @@ import BashParser, { CommandInput } from "../../Utils/Bash/BashParser";
 class Bash {
     private commands: Commands;
     private prevInput: string[];
+    private prevInputIndex: number;
 
     constructor(extensions?: Commands) {
         this.prevInput = [];
+        this.prevInputIndex = 0;
         this.commands = {
             ...BaseCommands,
             ...extensions
@@ -31,6 +33,7 @@ class Bash {
 
     public execute(input: string, currentState: BashState) {
         this.prevInput = [...this.prevInput, input];
+        this.prevInputIndex = this.prevInput.length - 1;
 
         const history = [...currentState.history, { content: input, cwd: currentState.cwd }];
         const newState = { ...currentState, history };
@@ -39,6 +42,28 @@ class Bash {
 
         return this.runCommands(commandInputs, newState);
     }
+
+    public getPreviousInput(): string {
+        const lastInput = this.prevInput[this.prevInputIndex];
+        if (this.prevInputIndex > 0) {
+            this.prevInputIndex--;
+        }
+
+        return lastInput;
+    }
+
+    public getNextInput(): string {
+        if (this.prevInputIndex < this.prevInput.length - 1) {
+            this.prevInputIndex++;
+            return this.prevInput[this.prevInputIndex];
+        }
+
+        return "";
+    }
+
+    public isLastInput(): boolean {
+        return !!this.prevInput.length;
+    }
 }
 
-export default Bash;
+export default new Bash();

@@ -16,8 +16,8 @@ const TerminalHistory = (props: Props) => {
   const { username, bashState } = props;
   return (
     <div>
-      {bashState.history.map((log) => (
-        <HistoryItemContainer>
+      {bashState.history.map((log, key) => (
+        <HistoryItemContainer key={key}>
           <TerminalPrompt>
             {!!log.cwd ? (
               <>

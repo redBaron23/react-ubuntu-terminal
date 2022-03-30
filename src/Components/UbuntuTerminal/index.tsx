@@ -29,7 +29,6 @@ const getInputWidth = (input: string): string => {
 
 const UbuntuTerminal = (props: Props) => {
   const { username } = props;
-  const bash = new Bash();
 
   const inputRef = useRef<any>();
 
@@ -50,13 +49,23 @@ const UbuntuTerminal = (props: Props) => {
   const handleOnKeyDown = (e: any) => {
     if (e.key === "Enter") {
       inputRef.current.scrollIntoView({ behavior: "smooth" });
-      const newState = bash.execute(terminalInput, bashState);
+      const newState = Bash.execute(terminalInput, bashState);
       setTerminalInput("");
       setBashState(newState);
     }
     // if control + c
     if (e.key === "c" && e.ctrlKey) {
       setTerminalInput("");
+    }
+    // if up arrow
+    if (e.key === "ArrowUp" && Bash.isLastInput()) {
+      const prevInput = Bash.getPreviousInput();
+      setTerminalInput(prevInput);
+    }
+    // if down arrow
+    if (e.key === "ArrowDown" && Bash.isLastInput()) {
+      const nextInput = Bash.getNextInput();
+      setTerminalInput(nextInput);
     }
   };
 
