@@ -1,4 +1,4 @@
-import History from "../../Model/Bash/History";
+import BashState from "../../Model/Bash/BashState";
 import {
   HistoryItemContainer,
   TerminalPrompt,
@@ -8,22 +8,21 @@ import {
 } from "./styles";
 
 interface Props {
-  history: History;
   username: string;
-  cwd: string;
+  bashState: BashState;
 }
 
-const HistoryList = (props: Props) => {
-  const { history, username, cwd } = props;
+const TerminalHistory = (props: Props) => {
+  const { username, bashState } = props;
   return (
     <div>
-      {history.map((log) => (
+      {bashState.history.map((log) => (
         <HistoryItemContainer>
           <TerminalPrompt>
             {!!log.cwd ? (
               <>
                 <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
-                <TerminalPromptLocation>{cwd}</TerminalPromptLocation>
+                <TerminalPromptLocation>{bashState.cwd}</TerminalPromptLocation>
                 <TerminalPromptBling>$</TerminalPromptBling>
                 <TerminalPromptBling>{log.content}</TerminalPromptBling>
               </>
@@ -37,4 +36,4 @@ const HistoryList = (props: Props) => {
   );
 };
 
-export default HistoryList;
+export default TerminalHistory;

@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import GlobalConstants from "../../Constants/GlobalConstants";
-import Folder from "../../Model/Bash/FileSystem/Folder";
 import Bash from "../../Services/Bash/Bash";
 import {
   BarButton,
   BarButtons,
   BarUser,
   Container,
-  HistoryItemContainer,
   Terminal,
   TerminalBar,
   TerminalBody,
@@ -18,16 +16,15 @@ import {
   TerminalPromptLocation,
   TerminalPromptUser,
 } from "./styles";
-import History from "../../Model/Bash/History";
 import BashState from "../../Model/Bash/BashState";
-import HistoryList from "./HistoryList";
+import TerminalHistory from "./TerminalHistory";
 
 interface Props {
   username: string;
 }
 
-const getInputWidth = (input: string) => {
-  return input.length * 8;
+const getInputWidth = (input: string): string => {
+  return `${input.length * 8}px`;
 };
 
 const UbuntuTerminal = (props: Props) => {
@@ -37,46 +34,40 @@ const UbuntuTerminal = (props: Props) => {
   const inputRef = useRef<any>();
 
   const [terminalInput, setTerminalInput] = useState("");
-  const [cwd, setCwd] = useState<string>(GlobalConstants.defaultCwd);
-  const [history, setHistory] = useState<History>([]);
-  const [fileSystem, setFileSystem] = useState<Folder>(
-    GlobalConstants.fileSystem
+  const [bashState, setBashState] = useState<BashState>(
+    new BashState(GlobalConstants.defaultCwd, [], GlobalConstants.fileSystem)
   );
 
-  console.log("EXE");
-
   useEffect(() => {
-    inputRef.current.focus();
-    const newState = bash.execute("help", new BashState(cwd, history, fileSystem));
-    setCwd(newState.cwd);
-    setHistory(newState.history);
-    setFileSystem(newState.files);
-  }, []);
+    ScrollToBottom();
+  }, [bashState]);
 
   const handleOnType = (e: any) => {
     const text = e.target.value;
     setTerminalInput(text);
   };
 
-  const renderHistoryItem = () => {
-    return (
-      <HistoryItemContainer>
-        <TerminalPrompt>
-          <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
-          <TerminalPromptLocation>{cwd}</TerminalPromptLocation>
-          <TerminalPromptBling>$</TerminalPromptBling>
-          <TerminalPromptBling>ls</TerminalPromptBling>
-        </TerminalPrompt>
-        <TerminalPrompt>
-          <TerminalPromptBling>README.md</TerminalPromptBling>
-        </TerminalPrompt>
-      </HistoryItemContainer>
-    );
+  const handleOnKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      inputRef.current.scrollIntoView({ behavior: "smooth" });
+      const newState = bash.execute(terminalInput, bashState);
+      setTerminalInput("");
+      setBashState(newState);
+    }
+    // if control + c
+    if (e.key === "c" && e.ctrlKey) {
+      setTerminalInput("");
+    }
   };
+
+  const ScrollToBottom = () =>
+    inputRef.current.scrollIntoView({ behavior: "smooth" });
+
+  const focusTerminal = () => inputRef.current.focus();
 
   return (
     <Container>
-      <Terminal onClick={() => inputRef.current.focus()}>
+      <Terminal onClick={focusTerminal}>
         <TerminalBar>
           <BarButtons>
             <BarButton exit />
@@ -86,7 +77,7 @@ const UbuntuTerminal = (props: Props) => {
           <BarUser>{username}@ubuntu:</BarUser>
         </TerminalBar>
         <TerminalBody>
-          <HistoryList history={history} username={username} cwd={cwd} />
+          <TerminalHistory username={username} bashState={bashState} />
           <TerminalPrompt>
             <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
             <TerminalPromptLocation>~</TerminalPromptLocation>
@@ -95,8 +86,9 @@ const UbuntuTerminal = (props: Props) => {
               type="text"
               value={terminalInput}
               onChange={handleOnType}
+              onKeyDown={handleOnKeyDown}
               ref={inputRef}
-              style={{ width: getInputWidth(terminalInput) }}
+              width={getInputWidth(terminalInput)}
             />
             <TerminalPromptCursor />
           </TerminalPrompt>

@@ -39,8 +39,6 @@ class Bash {
 
         return this.runCommands(commandInputs, newState);
     }
-
-
 }
 
 export default Bash;

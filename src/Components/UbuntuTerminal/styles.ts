@@ -96,6 +96,19 @@ export const TerminalBody = styled.section`
   height: calc(100% - 30px);
   padding-top: 2px;
   margin-top: -1px;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5; 
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    background-color: #CA623F;
+  }
 `;
 
 export const TerminalPrompt = styled.div`
@@ -111,17 +124,18 @@ export const TerminalPromptLocation = styled.span`
 `;
 
 export const TerminalPromptBling = styled.span`
+  margin-right: 9px;
   color: #dddddd;
 `;
 
-export const TerminalPromptInput = styled.input`
-  background: "rgba(56, 4, 40, 0.9)";
+export const TerminalPromptInput = styled.input<{ width?: string | number }>`
+  background: rgba(56, 4, 40, 0.9);
   color: #dddddd;
   font-family: "Ubuntu Mono";
   font-size: 1em;
   padding: 0;
   border: none;
-  margin-left: 9px;
+  width: ${(props) => props.width || "100%"};
 
   &:focus-visible {
     outline: none;
