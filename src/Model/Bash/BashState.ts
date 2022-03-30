@@ -1,10 +1,12 @@
 import Folder from "./FileSystem/Folder";
 import History from "./History";
 
-interface BashState {
-    history: History;
-    cwd: string;   
-    fileSystem: Folder;
+class BashState {
+    constructor(
+        public cwd: string,
+        public history: History,
+        public files: Folder,
+    ) { }
 }
 
 export default BashState;

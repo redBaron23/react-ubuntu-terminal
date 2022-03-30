@@ -1,3 +1,4 @@
+import BaseCommands from "../../Constants/BaseCommands";
 import BashState from "../../Model/Bash/BashState";
 import Commands from "../../Model/Bash/Commands";
 import BashParser, { CommandInput } from "../../Utils/Bash/BashParser";
@@ -9,6 +10,7 @@ class Bash {
     constructor(extensions?: Commands) {
         this.prevInput = [];
         this.commands = {
+            ...BaseCommands,
             ...extensions
         };
     }

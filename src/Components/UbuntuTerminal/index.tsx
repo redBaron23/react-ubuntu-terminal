@@ -19,6 +19,8 @@ import {
   TerminalPromptUser,
 } from "./styles";
 import History from "../../Model/Bash/History";
+import BashState from "../../Model/Bash/BashState";
+import HistoryList from "./HistoryList";
 
 interface Props {
   username: string;
@@ -35,14 +37,20 @@ const UbuntuTerminal = (props: Props) => {
   const inputRef = useRef<any>();
 
   const [terminalInput, setTerminalInput] = useState("");
-  const [cwd, setCwd] = useState<string>(`~`);
+  const [cwd, setCwd] = useState<string>(GlobalConstants.defaultCwd);
   const [history, setHistory] = useState<History>([]);
   const [fileSystem, setFileSystem] = useState<Folder>(
     GlobalConstants.fileSystem
   );
 
+  console.log("EXE");
+
   useEffect(() => {
     inputRef.current.focus();
+    const newState = bash.execute("help", new BashState(cwd, history, fileSystem));
+    setCwd(newState.cwd);
+    setHistory(newState.history);
+    setFileSystem(newState.files);
   }, []);
 
   const handleOnType = (e: any) => {
@@ -78,7 +86,7 @@ const UbuntuTerminal = (props: Props) => {
           <BarUser>{username}@ubuntu:</BarUser>
         </TerminalBar>
         <TerminalBody>
-          {renderHistoryItem()}
+          <HistoryList history={history} username={username} cwd={cwd} />
           <TerminalPrompt>
             <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
             <TerminalPromptLocation>~</TerminalPromptLocation>
