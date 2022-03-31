@@ -1,17 +1,17 @@
 import BashState from "../Model/Bash/BashState";
-import BashParser from "../Utils/Bash/BashParser";
+import BashUtil from "../Utils/Bash/BashUtil";
 
 const helpCommands = [
     "clear",
     "ls",
-    "cat",
-    "mkdir",
-    "cd",
+    // "cat",
+    // "mkdir",
+    // "cd",
     "pwd",
     "echo",
-    "printenv",
+    // "env",
     "whoami",
-    "rm",
+    // "rm",
 ];
 
 const help = {
@@ -38,7 +38,7 @@ const clear = {
 
 const pwd = {
     exec: (state: BashState): BashState => {
-        const currentDirectory = BashParser.getCurrentDirectory(state.cwd);
+        const currentDirectory = BashUtil.getFullPath(state.cwd);
         return {
             ...state,
             history: [...state.history, { content: currentDirectory }],
@@ -47,11 +47,32 @@ const pwd = {
 }
 
 const echo = {
-    exec: (state: BashState, flags?: string[], args: string[] = [""]): BashState => {
-        const message = args.join(' ') ;
+    exec: (state: BashState, flags?: string[], args?: string[]): BashState => {
+        const message = args!.join(' ') ;
         return {
             ...state,
             history: [...state.history, { content: message }],
+        }
+    }
+}
+
+const whoami = {
+    exec: (state: BashState): BashState => {
+        const user = state.user;
+        return {
+            ...state,
+            history: [...state.history, { content: state.user.username }],
+        }
+    }
+}
+
+const ls = {
+    exec: (state: BashState, flags?: string[], args?: string[]): BashState => {
+        console.log(state.files)
+        const files = BashUtil.getFiles(state.cwd, state.files);
+        return {
+            ...state,
+            history: [...state.history, { content: files.join('\n') }],
         }
     }
 }
@@ -61,6 +82,8 @@ const BaseCommands = {
     clear,
     pwd,
     echo,
+    ls,
+    whoami,
 }
 
 export default BaseCommands;

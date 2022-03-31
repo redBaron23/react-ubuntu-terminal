@@ -18,6 +18,7 @@ import {
 } from "./styles";
 import BashState from "../../Model/Bash/BashState";
 import TerminalHistory from "./TerminalHistory";
+import User from "../../Model/Bash/User";
 
 interface Props {
   username: string;
@@ -34,7 +35,12 @@ const UbuntuTerminal = (props: Props) => {
 
   const [terminalInput, setTerminalInput] = useState("");
   const [bashState, setBashState] = useState<BashState>(
-    new BashState(GlobalConstants.defaultCwd, [], GlobalConstants.fileSystem)
+    new BashState(
+      GlobalConstants.defaultCwd,
+      [],
+      GlobalConstants.fileSystem,
+      new User(username)
+    )
   );
 
   useEffect(() => {

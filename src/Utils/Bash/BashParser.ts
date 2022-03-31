@@ -55,17 +55,8 @@ function parse(input: string): CommandInput[] {
     return commands;
 }
 
-function getCurrentDirectory(pwd: string): string {
-    if (pwd === '~') {
-        return `/`;
-    }
-
-    return `/${pwd}`;
-}
-
 const BashParser = {
     parse,
-    getCurrentDirectory,
 }
 
 export default BashParser;
