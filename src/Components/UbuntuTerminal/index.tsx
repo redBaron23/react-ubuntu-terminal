@@ -95,7 +95,7 @@ const UbuntuTerminal = (props: Props) => {
           <TerminalHistory username={username} bashState={bashState} />
           <TerminalPrompt>
             <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
-            <TerminalPromptLocation>~</TerminalPromptLocation>
+            <TerminalPromptLocation>~{bashState.cwd}</TerminalPromptLocation>
             <TerminalPromptBling>$</TerminalPromptBling>
             <TerminalPromptInput
               type="text"

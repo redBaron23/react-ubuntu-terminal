@@ -13,11 +13,17 @@ const fileSystem: Folder = {
         file1: { content: 'The is the content for file1 in the <public> directory.' },
         file2: { content: 'The is the content for file2 in the <public> directory.' },
         file3: { content: 'The is the content for file3 in the <public> directory.' },
+        dir1: {
+            file: { content: 'The is the content for <file> in the <dir1> directory.' },
+            dir2: {
+                file32: { content: 'The is the content for <file> in the <dir2> directory.' },
+            },
+        },
     },
     'README.md': { content: '✌⊂(✰‿✰)つ✌ Thanks for checking out the tool! There is a lot that you can do with react-bash and I\'m excited to see all of the fun commands and projects build on top of it!' },
 };
 
-const defaultCwd = '~';
+const defaultCwd = '/';
 
 const GlobalConstants = {
     fileSystem,

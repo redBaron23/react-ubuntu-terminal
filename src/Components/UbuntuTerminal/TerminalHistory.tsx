@@ -22,7 +22,7 @@ const TerminalHistory = (props: Props) => {
             {!!log.cwd ? (
               <>
                 <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
-                <TerminalPromptLocation>{bashState.cwd}</TerminalPromptLocation>
+                <TerminalPromptLocation>~{bashState.cwd}</TerminalPromptLocation>
                 <TerminalPromptBling>$</TerminalPromptBling>
                 <TerminalPromptBling>{log.content}</TerminalPromptBling>
               </>

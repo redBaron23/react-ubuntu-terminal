@@ -48,7 +48,7 @@ const pwd = {
 
 const echo = {
     exec: (state: BashState, flags?: string[], args?: string[]): BashState => {
-        const message = args!.join(' ') ;
+        const message = args!.join(' ');
         return {
             ...state,
             history: [...state.history, { content: message }],
@@ -66,10 +66,25 @@ const whoami = {
     }
 }
 
-const ls = {
+const cd = {
     exec: (state: BashState, flags?: string[], args?: string[]): BashState => {
-        console.log(state.files)
-        const files = BashUtil.getFiles(state.cwd, state.files);
+        const folderName = args![0];
+        const currentDirectory = BashUtil.getFullPath(state.cwd, folderName);
+        return {
+            ...state,
+            cwd: currentDirectory,
+            history: [...state.history, { content: currentDirectory }],
+        }
+    }
+}
+
+const ls = {
+    exec: (state: BashState, flags: string[] = [], args: string[] = []): BashState => {
+        const folderName = args[0] || '';
+
+        const currentPath = BashUtil.getFullPath(state.cwd, folderName);
+        const files = BashUtil.getFiles(currentPath, state.files, false);
+
         return {
             ...state,
             history: [...state.history, { content: files.join('\n') }],
@@ -84,6 +99,7 @@ const BaseCommands = {
     echo,
     ls,
     whoami,
+    cd,
 }
 
 export default BaseCommands;
