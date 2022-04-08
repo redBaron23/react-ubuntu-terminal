@@ -23,11 +23,13 @@ const fileSystem: Folder = {
     'README.md': { content: '✌⊂(✰‿✰)つ✌ Thanks for checking out the tool! There is a lot that you can do with react-bash and I\'m excited to see all of the fun commands and projects build on top of it!' },
 };
 
-const defaultCwd = '/';
+const DEFAULT_CWD = '/';
+const BACK_REGEX = /\/?\.?[\w-_]+\/\.\./;
 
 const GlobalConstants = {
     fileSystem,
-    defaultCwd,
+    DEFAULT_CWD,
+    BACK_REGEX,
 };
 
 export default GlobalConstants;

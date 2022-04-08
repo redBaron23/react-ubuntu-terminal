@@ -36,7 +36,7 @@ const UbuntuTerminal = (props: Props) => {
   const [terminalInput, setTerminalInput] = useState("");
   const [bashState, setBashState] = useState<BashState>(
     new BashState(
-      GlobalConstants.defaultCwd,
+      GlobalConstants.DEFAULT_CWD,
       [],
       GlobalConstants.fileSystem,
       new User(username)

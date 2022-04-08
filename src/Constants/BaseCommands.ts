@@ -66,15 +66,22 @@ const whoami = {
     }
 }
 
-//TODO implement cd
 const cd = {
     exec: (state: BashState, flags?: string[], args?: string[]): BashState => {
         const folderName = args![0];
         const currentDirectory = BashUtil.getFullPath(state.cwd, folderName);
+
+        const pathExists = BashUtil.pathExists(currentDirectory, state.files)
+        if (pathExists) {
+            return {
+                ...state,
+                cwd: currentDirectory,
+            }
+        }
+
         return {
             ...state,
-            cwd: currentDirectory,
-            history: [...state.history, { content: currentDirectory }],
+            history: [...state.history, { content: `bash: cd: ${folderName}: No such file or directory` }],
         }
     }
 }
@@ -85,19 +92,29 @@ const ls = {
 
         const currentPath = BashUtil.getFullPath(state.cwd, folderName);
         try {
-
-            const files = BashUtil.getFiles(currentPath, state.files, false);
-
+            const files = BashUtil.getFilesByPath(currentPath, state.files);
             return {
                 ...state,
                 history: [...state.history, { content: files.join('\n') }],
             }
         }
-        catch (e) {
+        catch (e: any) {
             return {
                 ...state,
-                history: [...state.history, { content: `${currentPath}: No such file or directory (os error 2)` }],
+                history: [...state.history, { content: e.message }],
             }
+        }
+    }
+}
+
+const mkdir = {
+    exec: (state: BashState, flags: string[] = [], args: string[] = []): BashState => {
+        const folderName = args[0];
+        const currentDirectory = BashUtil.getFullPath(state.cwd, folderName);
+
+        return {
+            ...state,
+            files: BashUtil.createFolder(currentDirectory, state.files),
         }
     }
 }
@@ -110,6 +127,7 @@ const BaseCommands = {
     ls,
     whoami,
     cd,
+    mkdir,
 }
 
 export default BaseCommands;

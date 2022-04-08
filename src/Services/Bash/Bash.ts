@@ -17,6 +17,15 @@ class Bash {
         };
     }
 
+    private handleCommandNotFound(input: string, state: BashState): BashState {
+        return {
+            ...state,
+            history: [...state.history, {
+                content: `bash: ${input}: command not found
+            ` }]
+        };
+    }
+
     private runCommands(commandInputs: CommandInput[], state: BashState): BashState {
         const newState = commandInputs.reduce((state, commandInput) => {
             const command = this.commands[commandInput.command];
@@ -25,7 +34,7 @@ class Bash {
                 return command.exec(state, commandInput.flags, commandInput.args);
             }
 
-            return state;
+            return this.handleCommandNotFound(commandInput.command, state);
         }, state);
 
         return newState;
