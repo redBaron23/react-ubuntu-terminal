@@ -10,7 +10,7 @@ const helpCommands = [
     "pwd",
     "echo",
     // "env",
-    "whoami",
+    // "whoami",
     // "rm",
 ];
 
@@ -56,9 +56,9 @@ const echo = {
     }
 }
 
+//Todo update Ip
 const whoami = {
     exec: (state: BashState): BashState => {
-        const user = state.user;
         return {
             ...state,
             history: [...state.history, { content: state.user.username }],
