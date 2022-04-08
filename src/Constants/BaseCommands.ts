@@ -66,6 +66,7 @@ const whoami = {
     }
 }
 
+//TODO implement cd
 const cd = {
     exec: (state: BashState, flags?: string[], args?: string[]): BashState => {
         const folderName = args![0];
@@ -83,11 +84,20 @@ const ls = {
         const folderName = args[0] || '';
 
         const currentPath = BashUtil.getFullPath(state.cwd, folderName);
-        const files = BashUtil.getFiles(currentPath, state.files, false);
+        try {
 
-        return {
-            ...state,
-            history: [...state.history, { content: files.join('\n') }],
+            const files = BashUtil.getFiles(currentPath, state.files, false);
+
+            return {
+                ...state,
+                history: [...state.history, { content: files.join('\n') }],
+            }
+        }
+        catch (e) {
+            return {
+                ...state,
+                history: [...state.history, { content: `${currentPath}: No such file or directory (os error 2)` }],
+            }
         }
     }
 }

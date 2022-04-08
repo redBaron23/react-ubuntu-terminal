@@ -60,7 +60,7 @@ class BashUtil {
         }
 
         const [firstFolder, restOfPath] = this.extractFirstFolder(currentPath);
-        return this.getFiles(restOfPath, files[firstFolder] as Folder, showHiden, n +1);
+        return this.getFiles(restOfPath, files[firstFolder] as Folder, showHiden, n++);
     }
 }
 
