@@ -1,19 +1,8 @@
 import GlobalConstants from "../../Constants/GlobalConstants";
+import File from "../../Model/Bash/FileSystem/File";
 import Folder from "../../Model/Bash/FileSystem/Folder";
 
 class BashUtil {
-    private extractFirstFolder(path: string): string[] {
-        const folders = path.split('/').filter(x => x !== '');
-        if (folders.length === 0) {
-            return [''];
-        }
-        return [folders[0], folders.slice(1).join('/')];
-    }
-
-    private translatePath(path: string): string {
-        return path.replace('~', '/');
-    }
-
     /**
      * 
      * @param path full path eg: /home/user/file.txt
@@ -23,22 +12,20 @@ class BashUtil {
         return path.split('/').filter(x => x !== '');
     }
 
-    private getFilesInFolder(files: Folder, folderName: string, showHiden: boolean): string[] {
-        if (!folderName || GlobalConstants.defaultCwd === folderName) {
-            return Object.keys(files).filter(x => showHiden || x.charAt(0) !== '.');
-        }
+    private getAllFiles(files: Folder, showHiden: boolean): string[] {
+        return Object.keys(files).filter(x => showHiden || x.charAt(0) !== '.');
+    }
 
-        const folder = files[folderName];
-        if (!folder) {
-            //TODO Folder not found throw error here
-            return [];
+    private extractFirstFolder(path: string): string[] {
+        const folders = this.getFoldersInPath(path);
+        if (folders.length === 0) {
+            return [''];
         }
+        return [folders[0], folders.slice(1).join('/')];
+    }
 
-        const filesInFolder = Object.keys(folder).filter(x => x !== '.');
-        if (showHiden) {
-            return filesInFolder;
-        }
-        return filesInFolder.filter(x => x[0] !== '.');
+    private translatePath(path: string): string {
+        return path.replace('~', '/');
     }
 
     public getFullPath(pwd: string, folderName?: string): string {
@@ -56,11 +43,28 @@ class BashUtil {
 
     public getFiles(currentPath: string, files: Folder, showHiden: boolean, n: number = 0): string[] {
         if (currentPath === GlobalConstants.defaultCwd || !currentPath) {
-            return this.getFilesInFolder(files, currentPath, showHiden);
+            return this.getAllFiles(files, showHiden);
         }
 
         const [firstFolder, restOfPath] = this.extractFirstFolder(currentPath);
-        return this.getFiles(restOfPath, files[firstFolder] as Folder, showHiden, n++);
+
+        const folder = files[firstFolder];
+
+        if (this.isFolder(folder)) {
+            return this.getFiles(restOfPath, folder as Folder, showHiden, n + 1);
+        }
+
+        return [firstFolder];
+    }
+
+    public isFolder(folder: Folder | File): boolean {
+        // if folder has the property content return false
+        return !folder.hasOwnProperty('content');
+    }
+
+    public isFile(file: Folder | File): boolean {
+        // if file has the property content return true
+        return file.hasOwnProperty('content');
     }
 }
 

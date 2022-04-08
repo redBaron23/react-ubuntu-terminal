@@ -10,3 +10,7 @@ type Folder = {
 }
 
 export default Folder;
+
+export {
+    FolderType,
+}
