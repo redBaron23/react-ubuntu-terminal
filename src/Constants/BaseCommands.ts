@@ -1,4 +1,5 @@
 import BashState from "../Model/Bash/BashState";
+import Folder from "../Model/Bash/FileSystem/Folder";
 import BashUtil from "../Utils/Bash/BashUtil";
 
 const helpCommands = [
@@ -56,7 +57,6 @@ const echo = {
     }
 }
 
-//Todo update Ip
 const whoami = {
     exec: (state: BashState): BashState => {
         return {
@@ -91,30 +91,35 @@ const ls = {
         const folderName = args[0] || '';
 
         const currentPath = BashUtil.getFullPath(state.cwd, folderName);
-        try {
-            const files = BashUtil.getFilesByPath(currentPath, state.files);
-            return {
-                ...state,
-                history: [...state.history, { content: files.join('\n') }],
-            }
-        }
-        catch (e: any) {
-            return {
-                ...state,
-                history: [...state.history, { content: e.message }],
-            }
+        const files = BashUtil.getFilesByPath(currentPath, state.files);
+        return {
+            ...state,
+            history: [...state.history, { content: files.join('\n') }],
         }
     }
 }
 
 const mkdir = {
     exec: (state: BashState, flags: string[] = [], args: string[] = []): BashState => {
-        const folderName = args[0];
-        const currentDirectory = BashUtil.getFullPath(state.cwd, folderName);
+        const path = args[0];
+        const folderName = BashUtil.getFolderName(path);
+        const fullPath = BashUtil.getFullPath(state.cwd, path);
+        const fileSystemCopy = JSON.parse(JSON.stringify(state.files));
+        const dir = BashUtil.getDirectoryByPath(fileSystemCopy, fullPath);
 
+        if (dir[folderName]) {
+            return {
+                ...state,
+                history: [...state.history, { content: `bash: mkdir: ${path}: File exists` }],
+            }
+
+        }
+
+        dir[folderName] = {} as Folder;
+        console.log(fileSystemCopy)
         return {
             ...state,
-            files: BashUtil.createFolder(currentDirectory, state.files),
+            files: fileSystemCopy,
         }
     }
 }

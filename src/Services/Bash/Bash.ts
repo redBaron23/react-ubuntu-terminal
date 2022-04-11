@@ -30,11 +30,19 @@ class Bash {
         const newState = commandInputs.reduce((state, commandInput) => {
             const command = this.commands[commandInput.command];
 
-            if (command) {
+            if (!command) {
+                return this.handleCommandNotFound(commandInput.command, state);
+            }
+            
+            try {
                 return command.exec(state, commandInput.flags, commandInput.args);
             }
-
-            return this.handleCommandNotFound(commandInput.command, state);
+            catch(e: any) {
+                return {
+                    ...state,
+                    history: [...state.history, { content: e.message }]
+                };
+            }
         }, state);
 
         return newState;
