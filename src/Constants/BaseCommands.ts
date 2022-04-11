@@ -1,6 +1,7 @@
 import BashState from "../Model/Bash/BashState";
 import Folder from "../Model/Bash/FileSystem/Folder";
 import BashUtil from "../Utils/Bash/BashUtil";
+import GlobalConstants from "./GlobalConstants";
 
 const helpCommands = [
     "clear",
@@ -69,19 +70,20 @@ const whoami = {
 const cd = {
     exec: (state: BashState, flags?: string[], args?: string[]): BashState => {
         const folderName = args![0];
-        const currentDirectory = BashUtil.getFullPath(state.cwd, folderName);
 
-        const pathExists = BashUtil.pathExists(currentDirectory, state.files)
-        if (pathExists) {
+        if (!folderName || folderName === GlobalConstants.DEFAULT_CWD) {
             return {
                 ...state,
-                cwd: currentDirectory,
+                cwd: GlobalConstants.DEFAULT_CWD,
             }
         }
 
+        const currentDirectory = BashUtil.getFullPath(state.cwd, folderName);
+        BashUtil.getDirectoryByPath(state.files, currentDirectory);
+
         return {
             ...state,
-            history: [...state.history, { content: `bash: cd: ${folderName}: No such file or directory` }],
+            cwd: currentDirectory,
         }
     }
 }
@@ -102,25 +104,13 @@ const ls = {
 const mkdir = {
     exec: (state: BashState, flags: string[] = [], args: string[] = []): BashState => {
         const path = args[0];
-        const folderName = BashUtil.getFolderName(path);
         const fullPath = BashUtil.getFullPath(state.cwd, path);
-        const fileSystemCopy = JSON.parse(JSON.stringify(state.files));
-        const dir = BashUtil.getDirectoryByPath(fileSystemCopy, fullPath);
+        const newFileSystem = BashUtil.createFolder(fullPath, state.files)
 
-        if (dir[folderName]) {
-            return {
-                ...state,
-                history: [...state.history, { content: `bash: mkdir: ${path}: File exists` }],
-            }
-
-        }
-
-        dir[folderName] = {} as Folder;
-        console.log(fileSystemCopy)
-        return {
-            ...state,
-            files: fileSystemCopy,
-        }
+        console.log("______________________MKDIR", fullPath)
+        console.log(state.files)
+        console.log(newFileSystem)
+        return { ...state, files: newFileSystem }
     }
 }
 

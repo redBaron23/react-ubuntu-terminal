@@ -73,10 +73,10 @@ class BashUtil {
 
         // Strip trailing slash
         relativePath = this.trim(relativePath, '/');
-    
+
         // Create raw path
         let path = `${rootPath ? rootPath + '/' : ''}${relativePath}`;
-    
+
         // // Strip ../ references
         while (path.match(GlobalConstants.BACK_REGEX)) {
             path = path.replace(GlobalConstants.BACK_REGEX, '');
@@ -84,13 +84,13 @@ class BashUtil {
         return this.trim(path, '/');
     }
 
-    public getDirectoryByPath(structure: Folder, relativePath: string): Folder | never {
+    public getDirectoryByPath(files: Folder, relativePath: string): Folder | never {
         const path = relativePath.split('/');
-    
+
         // Short circuit for empty root path
-        if (!path[0]) return { dir: structure };
-    
-        let dir = structure;
+        if (!path[0]) return { ...files };
+
+        let dir = files;
         let i = 0;
         while (i < path.length) {
             const key = path[i];
@@ -106,7 +106,7 @@ class BashUtil {
             }
             i++;
         }
-        return { dir };
+        return { ...dir };
     }
 
     /**
@@ -139,20 +139,27 @@ class BashUtil {
 
     //TODO repair
     public createFolder(path: string, files: Folder): Folder {
-        const folders = this.getFoldersInPath(path);
-        const folderName = folders[folders.length - 1];
-        const restOfPath = folders.slice(0, folders.length - 1).join('/');
+        const [folderName, restOfPath] = this.extractFirstFolder(path);
 
-        const folder = files[folderName];
-
-        if (!!folder && this.isFolder(folder)) {
-            return this.createFolder(restOfPath, folder as Folder);
+        // if there is more path to explore and the folder exists
+        if (restOfPath && files[folderName]) {
+            return this.createFolder(restOfPath, files[folderName] as Folder);
         }
 
-        return {
-            ...files,
-            [folderName]: {},
-        };
+        // if there is more path to explore and the folder doesn't exist
+        // we create that folder and continue the recursion
+        if (restOfPath && !files[folderName]) {
+            return this.createFolder(restOfPath, { ...files, [folderName]: {} });
+        }
+
+        // if there is no more path to explore and the folder exists
+        if (!restOfPath && files[folderName]) {
+            throw new Error(`${path}: File exists`);
+        }
+
+        // if there is no more path to explore and the folder doesn't exist
+        // we create that folder and return it
+        return { ...files, [folderName]: {} };
     }
 
     public getFolderName(path: string): string {
