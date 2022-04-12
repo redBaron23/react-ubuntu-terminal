@@ -99,12 +99,12 @@ const ls = {
         if (!flags.includes('a')) {
             files = files.filter(file => !file.startsWith('.'));
         }
-        if (flags.includes('l')) {
-            return {
-                ...state,
-                history: { ...state.history }
-            }
-        }
+        // if (flags.includes('l')) {
+        //     return {
+        //         ...state,
+        //         history: { ...state.history }
+        //     }
+        // }
 
         return {
             ...state,

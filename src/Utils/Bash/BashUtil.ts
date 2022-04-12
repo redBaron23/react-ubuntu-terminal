@@ -152,8 +152,8 @@ class BashUtil {
         // if there is more path to explore and the folder doesn't exist
         // we create that folder and continue the recursion
         if (restOfPath && !files[folderName]) {
-            const newFolder = this.createFolder(restOfPath, { ...files, [folderName]: {} });
-            return { ...files, [folderName]: { ...files[folderName], ...newFolder } };
+            const newFolder = this.createFolder(restOfPath, {});
+            return { ...files, [folderName]: { ...newFolder } };
         }
 
         // if there is no more path to explore and the folder exists
