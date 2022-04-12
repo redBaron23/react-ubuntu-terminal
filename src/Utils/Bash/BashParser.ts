@@ -1,3 +1,5 @@
+import ArrayUtils from "../ArrayUtils";
+
 export interface CommandInput {
     command: string;
     flags: string[];
@@ -15,12 +17,12 @@ export interface CommandInput {
 const parseInput = (input: string): CommandInput => {
     const tokens = input.split(' ');
     const command = tokens[0];
-    const flags = tokens.slice(1).filter(token => token.startsWith('-'));
+    const flags = tokens.slice(1).filter(token => token.startsWith('-')).map(token => token.split(''));
     const args = tokens.slice(1).filter(token => !token.startsWith('-'));
 
     return {
         command,
-        flags,
+        flags: ArrayUtils.flatten(flags),
         args
     };
 };

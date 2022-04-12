@@ -93,7 +93,19 @@ const ls = {
         const folderName = args[0] || '';
 
         const currentPath = BashUtil.getFullPath(state.cwd, folderName);
-        const files = BashUtil.getFilesByPath(currentPath, state.files);
+        const directory = BashUtil.getDirectoryByPath(state.files, currentPath);
+        let files = Object.keys(directory);
+
+        if (!flags.includes('a')) {
+            files = files.filter(file => !file.startsWith('.'));
+        }
+        if (flags.includes('l')) {
+            return {
+                ...state,
+                history: { ...state.history }
+            }
+        }
+
         return {
             ...state,
             history: [...state.history, { content: files.join('\n') }],
@@ -107,9 +119,6 @@ const mkdir = {
         const fullPath = BashUtil.getFullPath(state.cwd, path);
         const newFileSystem = BashUtil.createFolder(fullPath, state.files)
 
-        console.log("______________________MKDIR", fullPath)
-        console.log(state.files)
-        console.log(newFileSystem)
         return { ...state, files: newFileSystem }
     }
 }

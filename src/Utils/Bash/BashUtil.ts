@@ -21,7 +21,9 @@ class BashUtil {
         if (folders.length === 0) {
             return [''];
         }
-        return [folders[0], folders.slice(1).join('/')];
+
+        const restOfPath = folders.slice(1).join('/');
+        return [folders[0], Object.keys(restOfPath).length > 0 ? restOfPath : ""];
     }
 
     private trim(str: string, char: string) {
@@ -85,11 +87,11 @@ class BashUtil {
     }
 
     public getDirectoryByPath(files: Folder, relativePath: string): Folder | never {
-        const path = relativePath.split('/');
-
         // Short circuit for empty root path
-        if (!path[0]) return { ...files };
-
+        if (relativePath === '/') return files;
+        
+        const path = relativePath.split('/').filter(x => x !== '');
+        
         let dir = files;
         let i = 0;
         while (i < path.length) {
@@ -106,7 +108,7 @@ class BashUtil {
             }
             i++;
         }
-        return { ...dir };
+        return dir;
     }
 
     /**
@@ -117,7 +119,7 @@ class BashUtil {
      * @param n param for recursivity
      * @returns files in selected path or not found
      */
-    public getFilesByPath(currentPath: string, files: Folder, showHiden: boolean = false, n: number = 0): string[] | never {
+    public getFilesByPath(currentPath: string, files: Folder, showHiden: boolean = false): string[] | never {
         if (currentPath === GlobalConstants.DEFAULT_CWD || !currentPath) {
             return this.getFilesByFolder(files, showHiden);
         }
@@ -131,7 +133,7 @@ class BashUtil {
         }
 
         if (this.isFolder(folder)) {
-            return this.getFilesByPath(restOfPath, folder as Folder, showHiden, n + 1);
+            return this.getFilesByPath(restOfPath, folder as Folder, showHiden);
         }
 
         return [firstFolder];
@@ -143,13 +145,15 @@ class BashUtil {
 
         // if there is more path to explore and the folder exists
         if (restOfPath && files[folderName]) {
-            return this.createFolder(restOfPath, files[folderName] as Folder);
+            const newFolder = this.createFolder(restOfPath, files[folderName] as Folder);
+            return { ...files, ...newFolder };
         }
 
         // if there is more path to explore and the folder doesn't exist
         // we create that folder and continue the recursion
         if (restOfPath && !files[folderName]) {
-            return this.createFolder(restOfPath, { ...files, [folderName]: {} });
+            const newFolder = this.createFolder(restOfPath, { ...files, [folderName]: {} });
+            return { ...files, ...newFolder }
         }
 
         // if there is no more path to explore and the folder exists
