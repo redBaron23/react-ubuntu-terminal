@@ -8,15 +8,14 @@ function App() {
   useEffect(() => {
     fetch("https://geolocation-db.com/json/")
       .then((res) => res.json())
-      .then((data) => setIp(data.IPv4));
+      .then((data) => setIp(data.IPv4))
+      .catch((e) => setIp("manfred"));
   }, []);
 
   return (
     <div className="App">
       <Suspense fallback="Loading...">
-        {
-          ip && <UbuntuTerminal username={ip} />
-        }
+        {ip && <UbuntuTerminal username={ip} />}
       </Suspense>
     </div>
   );

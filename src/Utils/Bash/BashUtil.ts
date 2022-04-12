@@ -89,9 +89,9 @@ class BashUtil {
     public getDirectoryByPath(files: Folder, relativePath: string): Folder | never {
         // Short circuit for empty root path
         if (relativePath === '/') return files;
-        
+
         const path = relativePath.split('/').filter(x => x !== '');
-        
+
         let dir = files;
         let i = 0;
         while (i < path.length) {
@@ -139,21 +139,21 @@ class BashUtil {
         return [firstFolder];
     }
 
-    //TODO repair
+    //TODO refactor
     public createFolder(path: string, files: Folder): Folder {
         const [folderName, restOfPath] = this.extractFirstFolder(path);
 
         // if there is more path to explore and the folder exists
         if (restOfPath && files[folderName]) {
             const newFolder = this.createFolder(restOfPath, files[folderName] as Folder);
-            return { ...files, ...newFolder };
+            return { ...files, [folderName]: { ...files[folderName], ...newFolder } };
         }
 
         // if there is more path to explore and the folder doesn't exist
         // we create that folder and continue the recursion
         if (restOfPath && !files[folderName]) {
             const newFolder = this.createFolder(restOfPath, { ...files, [folderName]: {} });
-            return { ...files, ...newFolder }
+            return { ...files, [folderName]: { ...files[folderName], ...newFolder } };
         }
 
         // if there is no more path to explore and the folder exists
