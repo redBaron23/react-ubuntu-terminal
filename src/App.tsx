@@ -1,6 +1,8 @@
 import { Suspense, useEffect, useState } from "react";
 import "./App.css";
 import UbuntuTerminal from "./Components/UbuntuTerminal";
+import { Helmet } from 'react-helmet';
+
 
 function App() {
   const [ip, setIp] = useState<string>("");
@@ -14,6 +16,9 @@ function App() {
 
   return (
     <div className="App">
+      <Helmet>
+        <title>Ubuntu Terminal</title>
+      </Helmet>
       <Suspense fallback="Loading...">
         {ip && <UbuntuTerminal username={ip} />}
       </Suspense>

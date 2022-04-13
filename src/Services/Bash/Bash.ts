@@ -30,6 +30,10 @@ class Bash {
         const newState = commandInputs.reduce((state, commandInput) => {
             const command = this.commands[commandInput.command];
 
+            if (commandInput.command === "") {
+                return state;
+            }
+
             if (!command) {
                 return this.handleCommandNotFound(commandInput.command, state);
             }
