@@ -20,7 +20,7 @@ const fileSystem: Folder = {
             },
         },
     },
-    'README.md': { content: '✌⊂(✰‿✰)つ✌ Thanks for checking out the tool! There is a lot that you can do with react-bash and I\'m excited to see all of the fun commands and projects build on top of it!' },
+    'README.md': { content: '✌⊂(✰‿✰)つ✌ Thanks for checking out my portfolio! here is the project\'s link https://github.com/redBaron23/portfolio' },
 };
 
 const DEFAULT_CWD = '/';

@@ -126,6 +126,7 @@ export const TerminalPromptLocation = styled.span`
 export const TerminalPromptBling = styled.span`
   margin-right: 9px;
   color: #dddddd;
+  text-align: start;
 `;
 
 export const TerminalPromptInput = styled.input<{ width?: string | number }>`
