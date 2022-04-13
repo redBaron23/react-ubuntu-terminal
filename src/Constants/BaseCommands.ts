@@ -14,6 +14,7 @@ const helpCommands = [
     // "env",
     "whoami",
     // "rm",
+    "node",
 ];
 
 const help = {
@@ -135,6 +136,15 @@ const cat = {
     }
 }
 
+const node = {
+    exec: (state: BashState, flags: string[] = [], args: string[] = []): BashState => {
+        const code = args.join(' ');
+        const result = eval(code);
+
+        return { ...state, history: [...state.history, { content: result }] }
+    }
+}
+
 const BaseCommands = {
     help,
     clear,
@@ -145,6 +155,7 @@ const BaseCommands = {
     cd,
     mkdir,
     cat,
+    node,
 }
 
 export default BaseCommands;
