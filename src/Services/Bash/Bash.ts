@@ -40,7 +40,7 @@ class Bash {
             catch(e: any) {
                 return {
                     ...state,
-                    history: [...state.history, { content: e.message }]
+                    history: [...state.history, { content: `bash: ${commandInput.command}: ${e.message}` }]
                 };
             }
         }, state);

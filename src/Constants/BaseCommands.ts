@@ -1,18 +1,18 @@
 import BashState from "../Model/Bash/BashState";
-import Folder from "../Model/Bash/FileSystem/Folder";
 import BashUtil from "../Utils/Bash/BashUtil";
 import GlobalConstants from "./GlobalConstants";
 
 const helpCommands = [
+    "help",
     "clear",
     "ls",
-    // "cat",
-    // "mkdir",
-    // "cd",
+    "cat",
+    "mkdir",
+    "cd",
     "pwd",
     "echo",
     // "env",
-    // "whoami",
+    "whoami",
     // "rm",
 ];
 
@@ -123,6 +123,16 @@ const mkdir = {
     }
 }
 
+const cat = {
+    exec: (state: BashState, flags: string[] = [], args: string[] = []): BashState => {
+        const path = args[0];
+        const fullPath = BashUtil.getFullPath(state.cwd, path);
+        const file = BashUtil.getFileByPath(state.files, fullPath);
+
+        return { ...state, history: [...state.history, { content: file.content }] }
+    }
+}
+
 const BaseCommands = {
     help,
     clear,
@@ -132,6 +142,7 @@ const BaseCommands = {
     whoami,
     cd,
     mkdir,
+    cat,
 }
 
 export default BaseCommands;

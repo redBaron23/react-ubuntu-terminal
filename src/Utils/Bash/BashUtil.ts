@@ -26,6 +26,19 @@ class BashUtil {
         return [folders[0], Object.keys(restOfPath).length > 0 ? restOfPath : ""];
     }
 
+    private extractLastFolder(path: string): string[] {
+        const folders = this.getFoldersInPath(path);
+
+        if (folders.length === 0) {
+            return [''];
+        }
+
+        const restOfPath = folders.slice(0, folders.length - 1).join('/');
+        const folderName = folders[folders.length - 1];
+
+        return [folderName, Object.keys(restOfPath).length > 0 ? restOfPath : ""];
+    }
+
     private trim(str: string, char: string) {
         if (str[0] === char) {
             str = str.substr(1);
@@ -109,6 +122,18 @@ class BashUtil {
             i++;
         }
         return dir;
+    }
+
+    public getFileByPath(files: Folder, currentPath: string): File | never {
+        const [fileName, restOfPath] = this.extractLastFolder(currentPath);
+
+        const folder = this.getDirectoryByPath(files, restOfPath);
+
+        if (folder[fileName] && this.isFile(folder[fileName])) {
+            return folder[fileName] as File;
+        }
+
+        throw new Error(GlobalConstants.ERRORS.NO_SUCH_FILE.replace('$1', currentPath));
     }
 
     /**

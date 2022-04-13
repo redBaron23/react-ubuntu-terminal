@@ -44,6 +44,11 @@ const UbuntuTerminal = (props: Props) => {
   );
 
   useEffect(() => {
+    const newState = Bash.execute("help", bashState);
+    setBashState(newState);
+  }, []);
+
+  useEffect(() => {
     ScrollToBottom();
   }, [bashState]);
 
