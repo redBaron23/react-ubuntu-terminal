@@ -79,11 +79,13 @@ const cd = {
         }
 
         const currentDirectory = BashUtil.getFullPath(state.cwd, folderName);
+
+        //check if folder exists
         BashUtil.getDirectoryByPath(state.files, currentDirectory);
 
         return {
             ...state,
-            cwd: currentDirectory,
+            cwd: currentDirectory ? currentDirectory : GlobalConstants.DEFAULT_CWD,
         }
     }
 }
