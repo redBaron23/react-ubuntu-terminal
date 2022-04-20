@@ -145,6 +145,18 @@ const node = {
     }
 }
 
+
+// TODO it is just removing in the root path and we need to pass a --force flag and --recursive flag (-fr)
+const rm = {
+    exec: (state: BashState, flags: string[] = [], args: string[] = []): BashState => {
+        const path = args[0];
+        const fullPath = BashUtil.getFullPath(state.cwd, path);
+        const newFileSystem = BashUtil.removeFolder(fullPath, state.files);
+
+        return { ...state, files: newFileSystem }
+    }
+}
+
 const BaseCommands = {
     help,
     clear,
@@ -156,6 +168,7 @@ const BaseCommands = {
     mkdir,
     cat,
     node,
+    rm,
 }
 
 export default BaseCommands;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GlobalConstants from "../../Constants/GlobalConstants";
 import Bash from "../../Services/Bash/Bash";
 import {
@@ -86,6 +86,7 @@ const UbuntuTerminal = (props: Props) => {
     if (e.key === "ArrowLeft") {
       setCaretOffset(
         TerminalUtils.getCurrentCaretOffset(
+          // TODO explain this
           terminalInput.length + 1,
           inputRef.current.selectionStart
         )
@@ -96,6 +97,7 @@ const UbuntuTerminal = (props: Props) => {
       setCaretOffset(
         TerminalUtils.getCurrentCaretOffset(
           terminalInput.length,
+          // TODO explain this
           inputRef.current.selectionStart + 1
         )
       );

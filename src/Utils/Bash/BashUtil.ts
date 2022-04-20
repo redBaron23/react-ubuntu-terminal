@@ -195,6 +195,32 @@ class BashUtil {
         const splittedPath = path.split('/');
         return splittedPath.pop()!;
     }
+
+    public removeFolder(path: string, files: Folder): Folder {
+        const [folderName, restOfPath] = this.extractFirstFolder(path);
+
+        // if there is more path to explore and the folder exists
+        if (restOfPath && files[folderName]) {
+            const newFolder = this.removeFolder(restOfPath, files[folderName] as Folder);
+            return { ...files, [folderName]: { ...files[folderName], ...newFolder } };
+        }
+
+        // if there is more path to explore and the folder doesn't exist
+        // we create that folder and continue the recursion
+        if (restOfPath && !files[folderName]) {
+            throw new Error(`${path}: No such file or directory (os error 2)`);
+        }
+
+        // if there is no more path to explore and the folder exists
+        if (!restOfPath && files[folderName]) {
+            const newFolder = { ...files };
+            delete newFolder[folderName];
+            return newFolder;
+        }
+
+        // if there is no more path to explore and the folder doesn't exist
+        throw new Error(`${path}: No such file or directory (os error 2)`);
+    }
 }
 
 export default new BashUtil();

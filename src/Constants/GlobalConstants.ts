@@ -2,12 +2,13 @@ import Folder from "../Model/Bash/FileSystem/Folder";
 
 const fileSystem: Folder = {
     '.hidden': {
-        file1: { content: 'The is the content for file1 in the <.hidden> directory.' },
-        file2: { content: 'The is the content for file2 in the <.hidden> directory.' },
-        dir2: {
-            file: { content: 'The is the content for <file> in the <.hidden> directory.' },
+        secrets: {
+            are_you_sure: {
+                you_want_to_know_my_secret: {
+                    '.secret': {content: 'I don\'t like Ubuntu, I\'m an arch user'}
+                }
+            }
         },
-        '.secrets': { content: 'I\'m still afraid of the dark...' },
     },
     public: {
         file1: { content: 'The is the content for file1 in the <public> directory.' },
@@ -20,7 +21,7 @@ const fileSystem: Folder = {
             },
         },
     },
-    'README.md': { content: '✌⊂(✰‿✰)つ✌ Thanks for checking out my portfolio! here is the project\'s link https://github.com/redBaron23/portfolio' },
+    'README.md': { content: 'Thanks for checking out my terminal portfolio! You can see the project\'s code here https://github.com/redBaron23/portfolio' },
 };
 
 const DEFAULT_CWD = '/';
