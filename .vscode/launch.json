@@ -6,7 +6,10 @@
       "request": "launch",
       "url": "http://localhost:3000/",
       "webRoot": "${workspaceFolder}/src",
-      "targetTypes": ["page", "webview"],
+      "targetTypes": [
+        "page",
+        "webview"
+      ],
       "runtimeExecutable": "/usr/bin/vivaldi-stable"
     },
     {
@@ -14,7 +17,16 @@
       "request": "attach",
       "urlFilter": "http://localhost:3000/*",
       "webRoot": "${workspaceFolder}/src",
-      "targetTypes": ["page", "webview"]
+      "targetTypes": [
+        "page",
+        "webview"
+      ]
+    },
+    {
+      "type": "pwa-chrome",
+      "name": "localhost:3000",
+      "request": "launch",
+      "url": "localhost:3000"
     }
   ]
 }

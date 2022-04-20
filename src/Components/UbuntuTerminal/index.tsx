@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import GlobalConstants from "../../Constants/GlobalConstants";
 import Bash from "../../Services/Bash/Bash";
 import {
   BarButton,
   BarButtons,
   BarUser,
+  CHAR_LENGTH,
   Container,
   Terminal,
   TerminalBar,
@@ -19,13 +20,15 @@ import {
 import BashState from "../../Model/Bash/BashState";
 import TerminalHistory from "./TerminalHistory";
 import User from "../../Model/Bash/User";
+import styled from "styled-components";
+import TerminalUtils from "../../Utils/Terminal/TerminalUtils";
 
 interface Props {
   username: string;
 }
 
 const getInputWidth = (input: string): string => {
-  return `${input.length * 8}px`;
+  return `${input.length * CHAR_LENGTH}px`;
 };
 
 const UbuntuTerminal = (props: Props) => {
@@ -42,6 +45,7 @@ const UbuntuTerminal = (props: Props) => {
       new User(username)
     )
   );
+  const [caretOffset, setCaretOffset] = useState(0);
 
   useEffect(() => {
     const newState = Bash.execute("help", bashState);
@@ -78,6 +82,24 @@ const UbuntuTerminal = (props: Props) => {
       const nextInput = Bash.getNextInput();
       setTerminalInput(nextInput);
     }
+    // if left arrow
+    if (e.key === "ArrowLeft") {
+      setCaretOffset(
+        TerminalUtils.getCurrentCaretOffset(
+          terminalInput.length + 1,
+          inputRef.current.selectionStart
+        )
+      );
+    }
+    // if right arrow
+    if (e.key === "ArrowRight") {
+      setCaretOffset(
+        TerminalUtils.getCurrentCaretOffset(
+          terminalInput.length,
+          inputRef.current.selectionStart + 1
+        )
+      );
+    }
   };
 
   const ScrollToBottom = () =>
@@ -102,20 +124,28 @@ const UbuntuTerminal = (props: Props) => {
             <TerminalPromptUser>{username}@ubuntu:</TerminalPromptUser>
             <TerminalPromptLocation>~{bashState.cwd}</TerminalPromptLocation>
             <TerminalPromptBling>$</TerminalPromptBling>
-            <TerminalPromptInput
-              type="text"
-              value={terminalInput}
-              onChange={handleOnType}
-              onKeyDown={handleOnKeyDown}
-              ref={inputRef}
-              width={getInputWidth(terminalInput)}
-            />
-            <TerminalPromptCursor />
+            <InputContainer>
+              <TerminalPromptInput
+                type="text"
+                value={terminalInput}
+                onChange={handleOnType}
+                onKeyDown={handleOnKeyDown}
+                ref={inputRef}
+                width={getInputWidth(terminalInput + 1)}
+              />
+              <TerminalPromptCursor offset={caretOffset} />
+            </InputContainer>
           </TerminalPrompt>
         </TerminalBody>
       </Terminal>
     </Container>
   );
 };
+
+const InputContainer = styled.div`
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+`;
 
 export default UbuntuTerminal;

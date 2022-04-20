@@ -1,5 +1,7 @@
 import styled, { keyframes } from "styled-components";
 
+export const CHAR_LENGTH = 8;
+
 export const Blink = keyframes`
   0% {
     background: #ffffff;
@@ -144,10 +146,14 @@ export const TerminalPromptInput = styled.input<{ width?: string | number }>`
   }
 `;
 
-export const TerminalPromptCursor = styled.span`
+export const TerminalPromptCursor = styled.span<{offset: number}>`
   display: block;
   height: 17px;
   width: 8px;
+  position: absolute;
+  top: 0;
+  right: ${props => props.offset ? props.offset : 0}px;
+  transition: right 0.2s;
   animation: ${Blink} 1200ms linear infinite;
 `;
 
